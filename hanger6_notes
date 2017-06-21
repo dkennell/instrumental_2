@@ -1,0 +1,95 @@
+Rails Project
+
+Name: Hangar6
+Desc: Airline managment tool
+Models: Aircraft, Passengers, Flights
+User: airport admins
+
+Realism note: obviously, this app does not perfectly reflect
+a real airport; the relationship between airline and airport
+staff is complex. I've mixed and matched responsibilities to 
+create a domain that works. As such, the domain is largly fictional, but I think that by adjusting this reality a 
+bit, it provides a fun and interesting scope for this project.
+As such, in this domain, not only are all planes owned by the airline, they have the responsibility of coordinating flights
+as well.
+
+Relationships
+---------------
+aircraft has_many flights
+aircraft has_many passengers through flights
+
+Models
+--------
+Aircraft: registration_num(6 chr) model, age, fuel_level, passenger_capacity
+Passenger: flight_id, name, age, class(1st, 2nd, coach), miles
+Flight: aircraft_id, (departure_from), destination, dept_time, arr_time, passenger_count, distance
+User: role, name
+
+Controllers
+-----------
+Aircraft - index, show, new+create, destroy(sell)
+Flight - index, show, new+create, edit+update destroy(cancel)
+Passenger - index, show, new+create, edit+update, destroy
+User - index, show, new+create, edit+update, destroy
+
+Permissions for Users
+----------------------
+reservation_agent:
+  view flights index & show
+  view aircraft show
+  view passengers index & show
+  create a passenger
+  give a passenger a  flight
+flight_dispatcher
+  view aircraft index
+  reservation_agent +
+  create a flight
+  give an aircraft a flight
+  edit a flight
+airline_administrator
+  flight_dispatcher +
+  create/destroy aircraft
+  destroy(cancel) flights
+  destroy(delete) passengers
+  view other users
+  create(hire) other users
+  destroy(fire) other non-admin users
+
+Checkboxes
+------------
+Nested form writer: can create a plane while creating a flight
+Omniauth: can login from linkedin
+
+
+TO DO
+------
+
+Should be able to edit a flight's details from index, or
+    delete it.
+Create button for deleting/firing employees
+Add 'km' to Distance form field for new flight
+Create a validation that makes sure arr_time is after 
+dept_time
+Fix login, not working.
+
+Notes
+------
+No reason for new_user form; that's wut sign_up's for
+
+
+
+
+Extra credit
+------------
+Use paperclip to give each aircracft a picture attribute
+
+Accepted Shortcomings of App
+-----------------------------
+ - Passenger counts on flights are simulated; they do not reflect
+      the actualy number of associated passengers
+ - Cities are fake, and the distances between them are random 
+ - A passenger's frequent flyer miles do not actually change.
+      Ideally, they would change to reflect the distances of the
+      the flights they take
+ - It may be a BIT unrealistic that an airline starts an entirely 
+      new flight for a single passenger
