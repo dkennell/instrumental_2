@@ -4,7 +4,7 @@ class CreateInstruments < ActiveRecord::Migration
       t.string :type
       t.string :model
       t.integer :price
-      t.integer :user_id
+      t.integer :customer_id
 
       t.timestamps null: false
     end
