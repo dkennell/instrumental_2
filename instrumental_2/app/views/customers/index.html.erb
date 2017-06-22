@@ -1,1 +1,12 @@
-CUSTOMERS INDEX PAGE
+<h2>Customers</h2>
+<div id="customer_list"></div>
+
+<script>
+  $.get("/customers.json", function(response){
+  	var customer_div = $("#customer_list")
+  	Array.prototype.forEach.call(response, function(customer){
+    customer_div.append(customer.name + "<br/>")
+})
+  })
+
+</script>

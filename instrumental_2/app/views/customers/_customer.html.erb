@@ -1,0 +1,4 @@
+<b><a href="/customers<%=customer.id%>"><%= customer.name %></a></b><br>
+<% customer.instruments.each do |instrument| %>
+  <p><%= instrument.model %> <%= instrument.kind %></p>
+<% end %><br>

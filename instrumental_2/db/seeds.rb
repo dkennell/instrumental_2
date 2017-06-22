@@ -26,6 +26,7 @@ instrument_brands = {
 10.times do
     instrument = Instrument.create
   	instrument.customer_id = customer_ids.sample
-  	instrument.type = instrument_brands.keys.sample
-  	instrument.model = instrument_brands[instrument.type].sample
+  	instrument.kind = instrument_brands.keys.sample
+  	instrument.model = instrument_brands[instrument.kind].sample
+  	instrument.save
 end

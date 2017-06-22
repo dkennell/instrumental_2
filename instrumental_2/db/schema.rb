@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(version: 20170622113043) do
   end
 
   create_table "instruments", force: :cascade do |t|
-    t.string   "type"
+    t.string   "kind"
     t.string   "model"
     t.integer  "price"
     t.integer  "customer_id"
