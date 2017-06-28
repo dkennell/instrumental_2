@@ -3,7 +3,9 @@
 
 <script>
   
-  $(document).ready(function(){
+  $(document).ready(function(event){
+    var customer_list = document.getElementById("customer_list")
+    customer_list.innerHTML = ""
     loadCustomers()
   })  
 
@@ -12,14 +14,9 @@
       var customer_list = document.getElementById("customer_list")
 
   	  Array.prototype.forEach.call(response, function(customer){
-        /////////////////////////////////////////////////////////
-        // THIS IS HAPPENING A SECOND TIME AFTER A THREE CLICKS ON
-        // THE 'CUSTOMERS' TAB. WHY?
-              customer_list.innerHTML += `<li id="${customer.id}"></li>`
-        ///////////////////////////////////////////////////////////
+        customer_list.innerHTML += `<li id="${customer.id}"></li>`
         var customer_list_item = document.getElementById(`${customer.id}`)
         // Reset the customer list item to prevent duplication in nested instrument list
-        customer_list_item.innerHTML = ""
         customer_list_item.innerHTML += `<a href="/customers/${customer.id}">${customer.name}</a>`
         customer_list_item.innerHTML += `<ul id="customer-${customer.id}-instruments-list"></ul>`
  
