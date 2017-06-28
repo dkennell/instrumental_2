@@ -1,4 +1,4 @@
 class InstrumentSerializer < ActiveModel::Serializer
-  attributes :id
+  attributes :id, :kind, :model
   belongs_to :customer
 end

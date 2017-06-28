@@ -48,9 +48,20 @@
   	var customer_id = $(location)[0].pathname[11]
   	var instrument_info = {instrument: {kind: instr_kind, model: instr_model, customer_id: customer_id}}
   	$.post("/instruments", instrument_info, function(response){
-  		console.log("zoop!")
+      var newInstrument = new Instrument(response.kind, response.model, response.customer.id)
+      newInstrument.appendToDOM()
   	})
-
-  	getCustomerInstruments()
   }
+
+  function Instrument(kind, model, customer_id){
+    this.kind = kind
+    this.model = model
+    this.customer_id = customer_id
+
+  }
+
+  Instrument.prototype.appendToDOM = function(){
+    $("#instruments").append(`<p>${this.model} ${this.kind}</p>`)
+  }
+
 </script>
