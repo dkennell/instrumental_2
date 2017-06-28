@@ -1,0 +1,56 @@
+<div id="heading"></div>
+
+<h4>Rent New Instrument:</h4>
+
+<form>
+  <label for="kind">Type: </label>
+  <input type="text" name="kind" id="kind">
+  <br />
+  <br />
+  <label for="model">Model: </label>
+  <input type="text" name="model" id="model">
+  <br />
+  <br />
+  <input type="submit" id="submit">
+</form>
+
+<div id="instruments"></div>
+
+<script>
+  $(function(){
+  	getCustomerInstruments()
+  	attachFormSubmitListener()
+  })
+
+  function getCustomerInstruments(){
+    var current_url = $(location)[0].pathname
+    $.get(current_url + ".json", function(customer){
+    $("#heading").html("<h2>" + customer.name + "</h2>")
+    $("#instruments").html("<h4>Currently Renting:</h4>")
+ 
+  	  Array.prototype.forEach.call(customer.instruments, function(instrument){
+        var instrumentsDiv = document.getElementById("instruments")
+        instrumentsDiv.innerHTML += "<p>" + instrument.model + " " + instrument.kind + "</p>"
+  	  })
+    })
+  }
+
+  function attachFormSubmitListener(){
+  	$("#submit").click(function(event){
+  		event.preventDefault()
+  		postNewInstrument()
+    })
+  }
+
+  function postNewInstrument(){  	
+  	var instr_kind = $("#kind").val()
+  	var instr_model = $("#model").val()
+  	var customer_id = $(location)[0].pathname[11]
+  	var instrument_info = {instrument: {kind: instr_kind, model: instr_model, customer_id: customer_id}}
+  	$.post("/instruments", instrument_info, function(response){
+  		console.log("zoop!")
+  	})
+
+  	getCustomerInstruments()
+  }
+</script>

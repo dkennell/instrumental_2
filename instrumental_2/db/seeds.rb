@@ -23,7 +23,7 @@ instrument_brands = {
 }
 
 
-10.times do
+30.times do
     instrument = Instrument.create
   	instrument.customer_id = customer_ids.sample
   	instrument.kind = instrument_brands.keys.sample
