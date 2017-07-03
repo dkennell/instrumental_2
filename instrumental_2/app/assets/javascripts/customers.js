@@ -1,78 +1,76 @@
-//////////////////////////////////////////////////
-// The problem here is that we need to call attachCustomerLinkListeners()
-// from the customers index page, but we also need to call it after we\ve
-// clicked on the 'customers' tab and replaced the entire body of the view
-// with the customers list. The problems comes from the fact that the JS on this
-// page always runs first. Even if nothing gets clicked, all of the code 
-// gets run. It actually goes through the process of building the listeners
-// and attaching them. If we\ve just loaded the customer index from scratch,
-// the problem is that there\s nothing to attach anything to.
 
-//Scratch that, the loadCustomers() call in the customers index executes
-//and finishes before th debugger in aCTL() fires. However, no customers
-//are loaded on the page.
-//////////////////////////////////////////////////
-
-
-// This file is required in the JS manifest (application.js)
-// The following doc.ready affects the entire application
 $(document).ready(function(){
-  debugger;
 	attachCustomersTabListener()
+  attachCustomerLinkListeners()
 })
 
-// Again, this function, FOR THE ENTIRE APP, specifies what
-//happens when you click on the 'customers' tab
-function attachCustomersTabListener(){
-  debugger;
-    // The code initially stops here, after the initial customers index refresh
-    // From here on that inital refresh, we go back to the customers index, before the 
-    // loadCustomers() call.
-	$("#customers_index").on("click", function(e){
-    // No debugger in this callback gets tripped on the inital refresh of the customer index
-    // So it looks like this callback gets *assigned*, but not actually run
 
+function attachCustomersTabListener(){
+	$("#customers_index").on("click", function(e){
 		e.preventDefault()
-    debugger;
-      // clears the page and loads the customer list
 			loadCustomers()
-      debugger;
-      // attaches listeners to the customer links
-      attachCustomerLinkListeners()
-      debugger;
 	})
 }
 
-// This must get called from TWO places: 1) the actual customers
-// index page, and 2) the 
 function attachCustomerLinkListeners(){
-  debugger;
-	var customer_links = $(".customer_link")
-    debugger
-
-  Array.prototype.forEach.call(customer_links, function(link){
-    debugger;
-    link.addEventListener("click", function(e){
+	$(document).on("click", ".customer_link", function(e){
+    e.stopPropagation()
     e.preventDefault()
-    debugger;
-    })
+    loadCustomer(this.id)
   })
 }
 
 
-// function loadCustomer(){
-//   debugger;
-// }
+function loadCustomer(customer_id){
+  $.get("/customers/" + customer_id, function(response){
+    var customer_page = document.getElementById("app_container")
+    customer_page.innerHTML = "<h2>" + response.name + "</h2>"
+    customer_page.innerHTML += "<h4>Rent New Instrument</h4>"
+    customer_page.innerHTML += '<form><label for="kind">Type: </label><input type="text" name="kind" id="kind"><br/><br/><label for="model">Model: </label><input type="text" name="model" id="model"><br/><br/><input type="submit" id="submit"></form><h4>Currently Renting:</h4>'
+    customer_page.innerHTML += "<div id='instruments'></div>"
+    var instruments = response.instruments
+     Array.prototype.forEach.call(instruments, function(instrument){
+        var instrumentsDiv = document.getElementById("instruments")
+        instrumentsDiv.innerHTML += "<p>" + instrument.model + " " + instrument.kind + "</p>"
+      })
+     attachFormSubmitListener(response.id)
+  })
+}
 
+  function attachFormSubmitListener(customer_id){
+    $("#submit").click(function(event){
+      event.preventDefault()
+      postNewInstrument(customer_id)
+    })
+  }
+
+  function postNewInstrument(customer_id){   
+    var instr_kind = $("#kind").val()
+    var instr_model = $("#model").val()
+    var instrument_info = {instrument: {kind: instr_kind, model: instr_model, customer_id: customer_id}}
+    $.post("/instruments", instrument_info, function(response){
+      var newInstrument = new Instrument(response.kind, response.model, response.customer.id)
+      newInstrument.appendToDOM()
+    })
+  }
+
+  function Instrument(kind, model, customer_id){
+    this.kind = kind
+    this.model = model
+    this.customer_id = customer_id
+
+  }
+
+  Instrument.prototype.appendToDOM = function(){
+    $("#instruments").append(`<p>${this.model} ${this.kind}</p>`)
+  }
+
+////////////////////////////////// CUSTOMER SHOW PAGE END //////////////////////////////////////////
 
 function loadCustomers(){
-    debugger;
-    // The code in this $.get isn't working. debuggers inside aren't tripping. Why?
     $.get("/customers.json", function(response){
-      debugger;
     	history.pushState(null, null, "/customers")
       var customer_list = document.getElementById("app_container")
-      debugger;
       customer_list.innerHTML = "<h2>Customers</h2>"
   	  	customer_list.innerHTML += "<ul>"
   	  Array.prototype.forEach.call(response, function(customer){
@@ -89,5 +87,4 @@ function loadCustomers(){
 	  	customer_list.innerHTML += "</ul>"
 
     })
-    attachCustomerLinkListeners()
   }

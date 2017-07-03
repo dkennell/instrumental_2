@@ -18,50 +18,7 @@
 
 <script>
   $(function(){
-  	getCustomerInstruments()
-  	attachFormSubmitListener()
+  	loadCustomer()
   })
-
-  function getCustomerInstruments(){
-    var current_url = $(location)[0].pathname
-    $.get(current_url + ".json", function(customer){
-    $("#heading").html("<h2>" + customer.name + "</h2>")
-    $("#instruments").html("<h4>Currently Renting:</h4>")
- 
-  	  Array.prototype.forEach.call(customer.instruments, function(instrument){
-        var instrumentsDiv = document.getElementById("instruments")
-        instrumentsDiv.innerHTML += "<p>" + instrument.model + " " + instrument.kind + "</p>"
-  	  })
-    })
-  }
-
-  function attachFormSubmitListener(){
-  	$("#submit").click(function(event){
-  		event.preventDefault()
-  		postNewInstrument()
-    })
-  }
-
-  function postNewInstrument(){  	
-  	var instr_kind = $("#kind").val()
-  	var instr_model = $("#model").val()
-  	var customer_id = $(location)[0].pathname[11]
-  	var instrument_info = {instrument: {kind: instr_kind, model: instr_model, customer_id: customer_id}}
-  	$.post("/instruments", instrument_info, function(response){
-      var newInstrument = new Instrument(response.kind, response.model, response.customer.id)
-      newInstrument.appendToDOM()
-  	})
-  }
-
-  function Instrument(kind, model, customer_id){
-    this.kind = kind
-    this.model = model
-    this.customer_id = customer_id
-
-  }
-
-  Instrument.prototype.appendToDOM = function(){
-    $("#instruments").append(`<p>${this.model} ${this.kind}</p>`)
-  }
 
 </script>
