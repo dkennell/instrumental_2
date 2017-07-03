@@ -17,5 +17,6 @@ An application for use by managers and owners of musical instrument shops
 Simply make a pull request and I'll take a look at your changes
 
 ##License
+
 WTFPL Public License
 http://www.wtfpl.net/about/
